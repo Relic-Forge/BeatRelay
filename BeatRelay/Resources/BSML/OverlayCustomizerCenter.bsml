@@ -1,0 +1,6 @@
+<bg>
+  <vertical child-control-width='true' child-control-height='false' child-align='UpperCenter' pad-top='4' spacing='2'>
+    <text text='BeatRelay' font-size='8'/>
+    <text text='Preview overlays are active' font-size='4'/>
+  </vertical>
+</bg>

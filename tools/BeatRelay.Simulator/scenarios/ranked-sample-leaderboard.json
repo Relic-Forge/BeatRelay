@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "page": 1,
+    "itemsPerPage": 10,
+    "total": 10
+  },
+  "container": {
+    "leaderboardId": "sample-ranked-leaderboard",
+    "ranked": true
+  },
+  "data": [
+    { "id": 1, "rank": 1, "modifiedScore": 990000, "pp": 520.2, "player": { "id": "player-1", "name": "Aster" } },
+    { "id": 2, "rank": 2, "modifiedScore": 975000, "pp": 505.8, "player": { "id": "player-2", "name": "Nova" } },
+    { "id": 3, "rank": 3, "modifiedScore": 960000, "pp": 492.4, "player": { "id": "player-3", "name": "Flux" } },
+    { "id": 4, "rank": 4, "modifiedScore": 945000, "pp": 481.1, "player": { "id": "player-4", "name": "Rift" } },
+    { "id": 5, "rank": 5, "modifiedScore": 930000, "pp": 470.6, "player": { "id": "player-5", "name": "Echo" } },
+    { "id": 6, "rank": 6, "modifiedScore": 915000, "pp": 458.3, "player": { "id": "player-6", "name": "Pulse" } },
+    { "id": 7, "rank": 7, "modifiedScore": 900000, "pp": 447.9, "player": { "id": "player-7", "name": "Vector" } },
+    { "id": 8, "rank": 8, "modifiedScore": 885000, "pp": 436.2, "player": { "id": "player-8", "name": "Orbit" } },
+    { "id": 9, "rank": 9, "modifiedScore": 870000, "pp": 425.7, "player": { "id": "player-9", "name": "Kite" } },
+    { "id": 10, "rank": 10, "modifiedScore": 850000, "pp": 412.0, "player": { "id": "player-10", "name": "Mira" } }
+  ]
+}

@@ -1,0 +1,34 @@
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd">
+  <vertical spacing="2" active="~SamplePanelVisible">
+    <horizontal horizontal-fit="PreferredSize" background="panel-top" preferred-width="46" preferred-height="10" child-align="MiddleCenter">
+      <text text="Sample Data" align="Center" font-size="7" bold="true" />
+    </horizontal>
+
+    <vertical child-expand-height="false" child-control-height="true" child-align="UpperCenter" spacing="1.2">
+      <text text="Map" font-size="5" align="Center" />
+      <horizontal child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="2" pref-height="24">
+        <image id="SelectedMapCoverImage" image-color="#202236" preserve-aspect="true" pref-width="20" pref-height="20" />
+        <vertical child-expand-height="false" child-control-height="true" child-align="MiddleLeft" spacing="0.2" pref-width="34">
+          <text text="~SelectedMapTitle" font-size="4.8" align="Left" />
+          <text text="~SelectedMapAuthor" font-size="3.2" align="Left" color="#7E8494" />
+          <text text="~SelectedMapStars" font-size="4.2" align="Left" />
+        </vertical>
+      </horizontal>
+      <button text="Select map" on-click="SelectPreviewMap" face-color="#05BDEB" font-size="4.5" pref-width="36" pref-height="9" />
+      <text text="Rank sample" font-size="4.2" align="Center" />
+      <horizontal child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="0.5">
+        <button text="E" on-click="SelectRankE" face-color="#73242A" font-size="4.2" pref-width="7" pref-height="7" />
+        <button text="D" on-click="SelectRankD" face-color="#8F4025" font-size="4.2" pref-width="7" pref-height="7" />
+        <button text="C" on-click="SelectRankC" face-color="#A86624" font-size="4.2" pref-width="7" pref-height="7" />
+        <button text="B" on-click="SelectRankB" face-color="#A8872E" font-size="4.2" pref-width="7" pref-height="7" />
+      </horizontal>
+      <horizontal child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="0.5">
+        <button text="A" on-click="SelectRankA" face-color="#439A63" font-size="4.2" pref-width="7" pref-height="7" />
+        <button text="S" on-click="SelectRankS" face-color="#2789AD" font-size="4.2" pref-width="7" pref-height="7" />
+        <button text="SS" on-click="SelectRankSS" face-color="#1097E0" font-size="4.2" pref-width="10" pref-height="7" />
+      </horizontal>
+      <text text="~SampleAccuracyText" font-size="4.2" align="Center" />
+      <button text="Refresh Overlay" on-click="RefreshSamplePreview" font-size="4.5" pref-width="38" pref-height="9" />
+    </vertical>
+  </vertical>
+</bg>

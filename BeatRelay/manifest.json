@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "BeatRelay",
+  "name": "BeatRelay",
+  "author": "Relic Forge",
+  "version": "0.1.0",
+  "description": "PC Beat Saber overlay that projects BeatLeader and ScoreSaber leaderboard rank during gameplay.",
+  "gameVersion": "1.40.8",
+  "dependsOn": {
+    "BSIPA": "^4.0.0",
+    "BeatSaberMarkupLanguage": "^1.12.5"
+  },
+  "files": [
+    "Plugins/BeatRelay.dll",
+    "Libs/Microsoft.Bcl.AsyncInterfaces.dll",
+    "Libs/System.Buffers.dll",
+    "Libs/System.IO.Pipelines.dll",
+    "Libs/System.Memory.dll",
+    "Libs/System.Numerics.Vectors.dll",
+    "Libs/System.Runtime.CompilerServices.Unsafe.dll",
+    "Libs/System.Text.Encodings.Web.dll",
+    "Libs/System.Text.Json.dll",
+    "Libs/System.Threading.Tasks.Extensions.dll"
+  ]
+}

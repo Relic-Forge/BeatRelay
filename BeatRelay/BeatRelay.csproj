@@ -1,0 +1,123 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
+    <AssemblyName>BeatRelay</AssemblyName>
+    <Version>0.1.0</Version>
+    <RootNamespace>BeatRelay</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+    <BeatSaberDir Condition="'$(BeatSaberDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Beat Saber</BeatSaberDir>
+    <BeatSaberManagedDir>$(BeatSaberDir)\Beat Saber_Data\Managed</BeatSaberManagedDir>
+    <BeatSaberPluginsDir>$(BeatSaberDir)\Plugins</BeatSaberPluginsDir>
+    <BeatSaberLibsDir>$(BeatSaberDir)\Libs</BeatSaberLibsDir>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+    <None Include="manifest.json" CopyToOutputDirectory="PreserveNewest" TargetPath="BeatRelay.manifest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <EmbeddedResource Include="manifest.json" LogicalName="BeatRelay.manifest.json" />
+    <EmbeddedResource Include="Resources\Fonts\**\*.*" LogicalName="BeatRelay.Resources.Fonts.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Resources\BSML\**\*.*" LogicalName="BeatRelay.Resources.BSML.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Resources\Images\**\*.*" LogicalName="BeatRelay.Resources.Images.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="IPA.Loader">
+      <HintPath>$(BeatSaberManagedDir)\IPA.Loader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(BeatSaberLibsDir)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(BeatSaberManagedDir)\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="BeatSaber.ViewSystem">
+      <HintPath>$(BeatSaberManagedDir)\BeatSaber.ViewSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Main">
+      <HintPath>$(BeatSaberManagedDir)\Main.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DataModels">
+      <HintPath>$(BeatSaberManagedDir)\DataModels.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="BeatmapCore">
+      <HintPath>$(BeatSaberManagedDir)\BeatmapCore.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="GameplayCore">
+      <HintPath>$(BeatSaberManagedDir)\GameplayCore.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="HMUI">
+      <HintPath>$(BeatSaberManagedDir)\HMUI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>$(BeatSaberManagedDir)\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="BSML">
+      <HintPath>$(BeatSaberPluginsDir)\BSML.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+  </ItemGroup>
+
+  <Target Name="CopyPluginToBeatSaber" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net48' and '$(InstallToBeatSaber)' != 'false' and Exists('$(BeatSaberPluginsDir)')">
+    <MakeDir Directories="$(BeatSaberPluginsDir)" />
+    <MakeDir Directories="$(BeatSaberLibsDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BeatSaberPluginsDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ReferenceCopyLocalPaths)" DestinationFolder="$(BeatSaberLibsDir)" SkipUnchangedFiles="true" />
+    <Delete Files="$(BeatSaberPluginsDir)\BeatRelay.manifest" Condition="Exists('$(BeatSaberPluginsDir)\BeatRelay.manifest')" />
+    <Delete Files="$(BeatSaberPluginsDir)\manifest.json" Condition="Exists('$(BeatSaberPluginsDir)\manifest.json')" />
+  </Target>
+
+</Project>

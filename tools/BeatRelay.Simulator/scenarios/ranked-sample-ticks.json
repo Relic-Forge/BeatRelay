@@ -1,0 +1,25 @@
+{
+  "name": "file-backed ranked sample",
+  "noteGapSeconds": 3.0,
+  "beatmap": {
+    "hash": "ABCDEF123",
+    "difficulty": "ExpertPlus",
+    "mode": "Standard",
+    "songName": "Simulated Map",
+    "mapperName": "Codex"
+  },
+  "ticks": [
+    { "elapsedSeconds": 0, "songProgressRatio": 0.01, "currentModifiedScore": 8900, "scoredNotes": 5, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 8, "songProgressRatio": 0.06, "currentModifiedScore": 53400, "scoredNotes": 45, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 16, "songProgressRatio": 0.13, "currentModifiedScore": 115700, "scoredNotes": 95, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 18, "songProgressRatio": 0.15, "currentModifiedScore": 133500, "scoredNotes": 110, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 30, "songProgressRatio": 0.25, "currentModifiedScore": 222500, "scoredNotes": 190, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 45, "songProgressRatio": 0.38, "currentModifiedScore": 338200, "scoredNotes": 280, "isPaused": true, "hasRecentNotes": false, "secondsSinceLastNote": 4.2, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 55, "songProgressRatio": 0.46, "currentModifiedScore": 409400, "scoredNotes": 350, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 70, "songProgressRatio": 0.58, "currentModifiedScore": 539400, "scoredNotes": 450, "hasRecentNotes": false, "secondsSinceLastNote": 3.5, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 84, "songProgressRatio": 0.70, "currentModifiedScore": 651000, "scoredNotes": 555, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 96, "songProgressRatio": 0.80, "currentModifiedScore": 768000, "scoredNotes": 640, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 108, "songProgressRatio": 0.90, "currentModifiedScore": 864000, "scoredNotes": 735, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 },
+    { "elapsedSeconds": 118, "songProgressRatio": 0.98, "currentModifiedScore": 940800, "scoredNotes": 820, "hasRecentNotes": true, "knownMaxModifiedScore": 1000000 }
+  ]
+}

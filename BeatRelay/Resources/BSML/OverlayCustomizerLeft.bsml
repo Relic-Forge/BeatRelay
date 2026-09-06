@@ -1,0 +1,95 @@
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd">
+  <vertical spacing="2">
+    <horizontal horizontal-fit="PreferredSize" background="panel-top" preferred-width="46" preferred-height="10" child-align="MiddleCenter">
+      <text text="Settings" align="Center" font-size="7" bold="true" />
+    </horizontal>
+
+    <horizontal child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="1.5">
+      <horizontal child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="0.5">
+        <image image="BeatRelay.Resources.Images.BeatLeader.png" preserve-aspect="true" pref-width="7" pref-height="7" />
+        <button id="BeatLeaderButton" text="~BeatLeaderModeLabel" on-click="SelectBeatLeader" face-color="~BeatLeaderModeColor" font-size="4.6" pref-width="29" pref-height="10" />
+      </horizontal>
+      <horizontal child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="0.5">
+        <image image="BeatRelay.Resources.Images.ScoreSaber.png" preserve-aspect="true" pref-width="7" pref-height="7" />
+        <button id="ScoreSaberButton" text="~ScoreSaberModeLabel" on-click="SelectScoreSaber" face-color="~ScoreSaberModeColor" font-size="4.6" pref-width="29" pref-height="10" />
+      </horizontal>
+    </horizontal>
+
+    <horizontal pref-height="8" child-align="MiddleCenter" child-expand-width="false" child-control-width="true" spacing="0.6">
+      <button text="General" on-click="SelectGeneralFilter" face-color="~GeneralTabColor" font-size="4.4" pref-width="24" pref-height="8" />
+      <button text="Behavior" on-click="SelectBehaviorFilter" face-color="~BehaviorTabColor" font-size="4.4" pref-width="24" pref-height="8" />
+    </horizontal>
+
+    <vertical pref-height="78" child-expand-height="false" child-control-height="true" child-align="UpperCenter">
+      <vertical active="~GeneralTabActive" pref-height="60" pref-width="98" child-expand-height="false" child-control-height="true" child-align="UpperCenter">
+        <horizontal active="~PreviewModeVisible" pref-height="8" child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="0.6">
+          <button text="Collapsed" on-click="SelectCollapsedPreview" face-color="~CollapsedPreviewColor" hover-hint="~CollapsedPreviewHoverHint" font-size="4.4" pref-width="28" pref-height="8" />
+          <button text="Expanded" on-click="SelectExpandedPreview" face-color="~ExpandedPreviewColor" font-size="4.4" pref-width="28" pref-height="8" />
+        </horizontal>
+
+        <scrollable-settings-container id="GeneralSettingsScroll" pref-height="50" pref-width="98" spacing="0.5" pad-left="14" pad-right="12" child-expand-height="false" child-control-height="true" child-control-width="true">
+          <vertical active="~CollapsedPreviewSelected" child-expand-height="false" child-control-height="true" child-align="UpperCenter" spacing="0.5">
+            <toggle-setting text="Show big rank" value="CollapsedShowBigRank" apply-on-change="true" />
+            <slider-setting text="Big rank scale" value="CollapsedBigRankScale" min="0.5" max="2.0" increments="0.05" apply-on-change="true" />
+            <slider-setting text="Player row scale" value="CollapsedPlayerRowScale" min="0.5" max="2.0" increments="0.05" apply-on-change="true" />
+            <toggle-setting text="Show PP" value="CollapsedShowPp" apply-on-change="true" />
+            <toggle-setting text="Show modifiers" value="CollapsedShowModifiers" apply-on-change="true" />
+            <toggle-setting text="Show usernames" value="CollapsedShowNames" apply-on-change="true" />
+            <toggle-setting text="Show accuracy" value="CollapsedShowAccuracy" apply-on-change="true" />
+            <toggle-setting text="Show score" value="CollapsedShowScore" apply-on-change="true" />
+            <vertical active="~BeatLeaderSettingsVisible" child-expand-height="false" child-control-height="true" child-align="UpperCenter">
+              <toggle-setting text="Show highlight" value="CollapsedShowHighlight" apply-on-change="true" />
+            </vertical>
+            <slider-setting text="Background opacity" value="CollapsedBackgroundOpacity" min="0.0" max="100.0" increments="1.0" apply-on-change="true" />
+          </vertical>
+
+          <vertical active="~ExpandedPreviewSelected" child-expand-height="false" child-control-height="true" child-align="UpperCenter" spacing="0.5">
+            <toggle-setting text="Show big rank" value="ExpandedShowBigRank" apply-on-change="true" />
+            <slider-setting text="Big rank scale" value="ExpandedBigRankScale" min="0.5" max="2.0" increments="0.05" apply-on-change="true" />
+            <slider-setting text="Player row scale" value="ExpandedPlayerRowScale" min="0.5" max="2.0" increments="0.05" apply-on-change="true" />
+            <toggle-setting text="Show PP" value="ExpandedShowPp" apply-on-change="true" />
+            <toggle-setting text="Show modifiers" value="ExpandedShowModifiers" apply-on-change="true" />
+            <toggle-setting text="Show usernames" value="ExpandedShowNames" apply-on-change="true" />
+            <toggle-setting text="Show accuracy" value="ExpandedShowAccuracy" apply-on-change="true" />
+            <toggle-setting text="Show score" value="ExpandedShowScore" apply-on-change="true" />
+            <vertical active="~BeatLeaderSettingsVisible" child-expand-height="false" child-control-height="true" child-align="UpperCenter">
+              <toggle-setting text="Show highlight" value="ExpandedShowHighlight" apply-on-change="true" />
+            </vertical>
+            <slider-setting text="Background opacity" value="ExpandedBackgroundOpacity" min="0.0" max="100.0" increments="1.0" apply-on-change="true" hover-hint="Expanded opacity also affects the desktop overlay." />
+          </vertical>
+        </scrollable-settings-container>
+      </vertical>
+
+      <vertical active="~BehaviorTabActive" pref-height="60" pref-width="98" child-expand-height="false" child-control-height="true" child-align="UpperCenter">
+        <scrollable-settings-container id="BehaviorSettingsScroll" pref-height="58" pref-width="98" spacing="0.5" pad-left="14" pad-right="12" child-expand-height="false" child-control-height="true" child-control-width="true">
+          <toggle-setting text="Enabled" value="Enabled" apply-on-change="true" />
+          <toggle-setting text="Desktop overlay enabled" value="EnableDesktopOverlay" apply-on-change="true" hover-hint="Note that the desktop overlay is always in expanded mode, so collapsed mode changes won't affect it." />
+          <dropdown-list-setting text="Position" value="PositionPreset" options="PositionPresets" formatter="FormatPositionPreset" apply-on-change="true" hover-hint="Read the README (on the github page) for more information why this is here." />
+          <toggle-setting text="Dynamic pp/score" value="DynamicPpScore" apply-on-change="true" interactable="~DynamicPpScoreInteractable" hover-hint="~DynamicPpScoreHoverHint" />
+          <slider-setting text="In-game overlay scale" value="InGameOverlayScale" min="0.5" max="2.0" increments="0.05" apply-on-change="true" />
+          <slider-setting text="Desktop overlay scale" value="DesktopOverlayScale" min="0.5" max="2.0" increments="0.05" apply-on-change="true" />
+          <slider-setting text="Update interval (seconds)" value="UpdateIntervalSeconds" min="0.25" max="3.0" increments="0.25" apply-on-change="true" />
+          <toggle-setting text="Always expand" value="AlwaysExpand" apply-on-change="true" />
+          <slider-setting text="Expand on break (seconds)" value="ExpandOnBreakSeconds" min="2.0" max="10.0" increments="0.5" apply-on-change="true" />
+          <slider-setting text="Visible players" value="VisiblePlayerCount" min="0" max="5" increments="1" integer-only="true" apply-on-change="true" />
+          <button text="Reset to default" event-click="show-reset-modal" face-color="#B8243E" font-size="4.5" pref-width="48" pref-height="10" />
+        </scrollable-settings-container>
+      </vertical>
+    </vertical>
+  </vertical>
+
+  <modal size-delta-x="58"
+         size-delta-y="34"
+         clickerino-offerino-closerino="false"
+         move-to-center="true"
+         show-event="show-reset-modal"
+         hide-event="hide-reset-modal">
+    <vertical preferred-width="54" preferred-height="30" pad="2" child-align="MiddleCenter" child-control-height="true" child-expand-height="true">
+      <text text="Reset BeatRelay settings to defaults?" align="Center" word-wrapping="true" bold="true" italics="true" />
+      <horizontal vertical-fit="MinSize" child-expand-width="false" child-control-width="true" child-align="MiddleCenter" spacing="2">
+        <button text="Cancel" event-click="hide-reset-modal" pref-width="18" />
+        <button text="Reset" event-click="hide-reset-modal" on-click="ConfirmResetDefaults" face-color="#B8243E" pref-width="18" />
+      </horizontal>
+    </vertical>
+  </modal>
+</bg>
