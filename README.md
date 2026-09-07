@@ -6,6 +6,8 @@ BeatRelay supports both BeatLeader and ScoreSaber, including source selection fr
 
 This release targets **Beat Saber 1.40.8 on Windows PC**. Newer versions will be added eventually.
 
+![BeatRelay in gameplay, showing BeatLeader and ScoreSaber modes](docs/images/BeatRelay-showcase.gif)
+
 ## Features
 
 - Live projected leaderboard rank during gameplay.
