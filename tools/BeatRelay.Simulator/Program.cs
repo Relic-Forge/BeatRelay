@@ -1,6 +1,5 @@
 using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using BeatRelay.BeatLeader;
 using BeatRelay.BeatSaber;
 using BeatRelay.Config;
@@ -66,12 +65,7 @@ static SimulationScenario LoadScenario(SimulationOptions options)
 static T ReadJson<T>(string path)
 {
     var json = File.ReadAllText(path);
-    return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    }) ?? throw new InvalidOperationException("Could not parse " + path);
+    return JsonConvert.DeserializeObject<T>(json) ?? throw new InvalidOperationException("Could not parse " + path);
 }
 
 static SimulationScenario BuildDefaultScenario()

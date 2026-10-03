@@ -2,134 +2,134 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using BeatRelay.BeatLeader;
 
 namespace BeatRelay.ScoreSaber;
 
 public sealed class ScoreSaberLeaderboardResponse
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public long Id { get; set; }
 
-    [JsonPropertyName("map")]
+    [JsonProperty("map")]
     public ScoreSaberMapDto? Map { get; set; }
 
-    [JsonPropertyName("difficulty")]
+    [JsonProperty("difficulty")]
     public ScoreSaberDifficultyDto? Difficulty { get; set; }
 
-    [JsonPropertyName("maxScore")]
+    [JsonProperty("maxScore")]
     public int? MaxScore { get; set; }
 
-    [JsonPropertyName("totalScores")]
+    [JsonProperty("totalScores")]
     public int TotalScores { get; set; }
 
-    [JsonPropertyName("realm")]
+    [JsonProperty("realm")]
     public ScoreSaberRealmDto? Realm { get; set; }
 }
 
 public sealed class ScoreSaberScoresResponse
 {
-    [JsonPropertyName("data")]
+    [JsonProperty("data")]
     public List<ScoreSaberScoreDto> Data { get; set; } = new();
 
-    [JsonPropertyName("metadata")]
+    [JsonProperty("metadata")]
     public ScoreSaberMetadataDto? Metadata { get; set; }
 
-    [JsonPropertyName("playerScore")]
+    [JsonProperty("playerScore")]
     public ScoreSaberScoreDto? PlayerScore { get; set; }
 }
 
 public sealed class ScoreSaberPlayerScoresResponse
 {
-    [JsonPropertyName("data")]
+    [JsonProperty("data")]
     public List<ScoreSaberPlayerScoreDto> Data { get; set; } = new();
 
-    [JsonPropertyName("metadata")]
+    [JsonProperty("metadata")]
     public ScoreSaberMetadataDto? Metadata { get; set; }
 }
 
 public sealed class ScoreSaberPlayerScoreDto
 {
-    [JsonPropertyName("score")]
+    [JsonProperty("score")]
     public ScoreSaberScoreDto? Score { get; set; }
 
-    [JsonPropertyName("leaderboard")]
+    [JsonProperty("leaderboard")]
     public ScoreSaberLeaderboardResponse? Leaderboard { get; set; }
 }
 
 public sealed class ScoreSaberMapDto
 {
-    [JsonPropertyName("hash")]
+    [JsonProperty("hash")]
     public string? Hash { get; set; }
 }
 
 public sealed class ScoreSaberDifficultyDto
 {
-    [JsonPropertyName("difficulty")]
+    [JsonProperty("difficulty")]
     public int Difficulty { get; set; }
 
-    [JsonPropertyName("rawDifficulty")]
+    [JsonProperty("rawDifficulty")]
     public string? RawDifficulty { get; set; }
 
-    [JsonPropertyName("gameMode")]
+    [JsonProperty("gameMode")]
     public string? GameMode { get; set; }
 }
 
 public sealed class ScoreSaberRealmDto
 {
-    [JsonPropertyName("realmId")]
+    [JsonProperty("realmId")]
     public int RealmId { get; set; }
 
-    [JsonPropertyName("realmName")]
+    [JsonProperty("realmName")]
     public string? RealmName { get; set; }
 
-    [JsonPropertyName("leaderboardStatus")]
+    [JsonProperty("leaderboardStatus")]
     public string? LeaderboardStatus { get; set; }
 
-    [JsonPropertyName("positiveModifiers")]
+    [JsonProperty("positiveModifiers")]
     public bool PositiveModifiers { get; set; }
 
-    [JsonPropertyName("stars")]
+    [JsonProperty("stars")]
     public double? Stars { get; set; }
 }
 
 public sealed class ScoreSaberMetadataDto
 {
-    [JsonPropertyName("page")]
+    [JsonProperty("page")]
     public int Page { get; set; }
 
-    [JsonPropertyName("itemsPerPage")]
+    [JsonProperty("itemsPerPage")]
     public int ItemsPerPage { get; set; }
 
-    [JsonPropertyName("totalItems")]
+    [JsonProperty("totalItems")]
     public int TotalItems { get; set; }
 }
 
 public sealed class ScoreSaberScoreDto
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public long Id { get; set; }
 
-    [JsonPropertyName("rank")]
+    [JsonProperty("rank")]
     public int Rank { get; set; }
 
-    [JsonPropertyName("unmodifiedScore")]
+    [JsonProperty("unmodifiedScore")]
     public int? UnmodifiedScore { get; set; }
 
-    [JsonPropertyName("modifiedScore")]
+    [JsonProperty("modifiedScore")]
     public int ModifiedScore { get; set; }
 
-    [JsonPropertyName("accuracy")]
+    [JsonProperty("accuracy")]
     public double? Accuracy { get; set; }
 
-    [JsonPropertyName("pp")]
+    [JsonProperty("pp")]
     public double? Pp { get; set; }
 
-    [JsonPropertyName("mods")]
+    [JsonProperty("mods")]
     public List<string>? Mods { get; set; }
 
-    [JsonPropertyName("player")]
+    [JsonProperty("player")]
     public ScoreSaberPlayerDto? Player { get; set; }
 
     public BeatLeaderScoreDto ToBeatLeaderScoreDto()
@@ -176,25 +176,25 @@ public sealed class ScoreSaberScoreDto
 
 public sealed class ScoreSaberPlayerDto
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string? Name { get; set; }
 
-    [JsonPropertyName("playerNameInGame")]
+    [JsonProperty("playerNameInGame")]
     public string? PlayerNameInGame { get; set; }
 
-    [JsonPropertyName("avatar")]
+    [JsonProperty("avatar")]
     public string? Avatar { get; set; }
 
-    [JsonPropertyName("avatarUrl")]
+    [JsonProperty("avatarUrl")]
     public string? AvatarUrl { get; set; }
 
-    [JsonPropertyName("profilePicture")]
+    [JsonProperty("profilePicture")]
     public string? ProfilePicture { get; set; }
 
-    [JsonPropertyName("profilePictureUrl")]
+    [JsonProperty("profilePictureUrl")]
     public string? ProfilePictureUrl { get; set; }
 
     public string? ResolveAvatarUrl()

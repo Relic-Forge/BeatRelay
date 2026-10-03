@@ -1,14 +1,15 @@
 using System;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace BeatRelay.Config;
 
 public sealed class ConfigManager
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
+    private static readonly JsonSerializerSettings SerializerSettings = new()
     {
-        WriteIndented = true
+        Formatting = Formatting.Indented,
+        DateParseHandling = DateParseHandling.None
     };
 
     public ConfigManager(string configDirectory)
@@ -38,7 +39,7 @@ public sealed class ConfigManager
         }
 
         var json = File.ReadAllText(ConfigPath);
-        var config = JsonSerializer.Deserialize<OverlayConfig>(json, SerializerOptions) ?? new OverlayConfig();
+        var config = JsonConvert.DeserializeObject<OverlayConfig>(json, SerializerSettings) ?? new OverlayConfig();
         config.Normalize(!json.Contains("\"ScaleSemanticsVersion\""));
         Save(config);
         return config;
@@ -47,7 +48,7 @@ public sealed class ConfigManager
     public void Save(OverlayConfig config)
     {
         config.Normalize();
-        var json = JsonSerializer.Serialize(config, SerializerOptions);
+        var json = JsonConvert.SerializeObject(config, SerializerSettings);
         File.WriteAllText(ConfigPath, json);
     }
 }

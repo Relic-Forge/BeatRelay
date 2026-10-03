@@ -9,7 +9,8 @@ using BeatRelay.Sessions;
 using BeatRelay.UI;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 RunPluginStartupSmokeTest();
 RunOverlayConfigDefaultsTest();
@@ -169,9 +170,7 @@ static void RunBeatLeaderNestedSongResponseTest()
         }
         """;
 
-    var parsed = JsonSerializer.Deserialize<BeatLeaderSongResponse>(
-        responseJson,
-        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    var parsed = JsonConvert.DeserializeObject<BeatLeaderSongResponse>(responseJson);
     var difficulties = parsed?.ResolveDifficulties();
 
     Assert(difficulties != null && difficulties.Count == 1, "Expected nested BeatLeader song difficulties to resolve.");
@@ -551,7 +550,7 @@ static async Task RunScoreSaberPlayerBestSeedsLocalPageTestAsync()
 
 static void RunLeaderboardContainerModifierValuesTest()
 {
-    using var document = JsonDocument.Parse("""
+    var document = JObject.Parse("""
         {
           "leaderboard": {
             "difficulty": {
@@ -566,9 +565,9 @@ static void RunLeaderboardContainerModifierValuesTest()
 
     var container = new LeaderboardContainer
     {
-        ExtraData = new Dictionary<string, JsonElement>
+        ExtraData = new Dictionary<string, JToken>
         {
-            ["leaderboard"] = document.RootElement.GetProperty("leaderboard").Clone()
+            ["leaderboard"] = document["leaderboard"]!
         }
     };
 
@@ -1569,7 +1568,7 @@ static void RunSessionMainThreadContinuationTest()
 static void RunFixedPlayerLabelLifecycleTest()
 {
     // Legacy configuration cannot restore a custom label.
-    var config = JsonSerializer.Deserialize<OverlayConfig>("{\"DisplayNameOverride\":\"Old custom name\"}")!;
+    var config = JsonConvert.DeserializeObject<OverlayConfig>("{\"DisplayNameOverride\":\"Old custom name\"}")!;
     var stateMachine = new OverlayStateMachine(config);
     var cache = BuildCache();
     cache.ScoresByRank[1].PlayerName = "You";
@@ -1693,7 +1692,7 @@ static async Task RunSessionManagerUnrankedStartsFromBottomTestAsync()
 static async Task RunSessionManagerAppliesContainerModifierValuesTestAsync()
 {
     var apiClient = new FakeBeatLeaderApiClient();
-    using var document = JsonDocument.Parse("""
+    var document = JObject.Parse("""
         {
           "modifierValues": {
             "fs": 0.2
@@ -1714,9 +1713,9 @@ static async Task RunSessionManagerAppliesContainerModifierValuesTestAsync()
             LeaderboardId = "leaderboard-container-mods",
             Ranked = false,
             MaxScore = 681_142,
-            ExtraData = new Dictionary<string, JsonElement>
+            ExtraData = new Dictionary<string, JToken>
             {
-                ["modifierValues"] = document.RootElement.GetProperty("modifierValues").Clone()
+                ["modifierValues"] = document["modifierValues"]!
             }
         },
         Data =

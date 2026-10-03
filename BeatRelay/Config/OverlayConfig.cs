@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BeatRelay.Config;
 
@@ -146,7 +146,7 @@ public sealed class OverlayConfig
     public string PositionPreset { get; set; } = "AboveHighway";
 
     [JsonExtensionData]
-    public Dictionary<string, JsonElement>? ExtensionData { get; set; }
+    public Dictionary<string, JToken>? ExtensionData { get; set; }
 
     public void Normalize()
     {
@@ -415,12 +415,13 @@ public sealed class OverlayConfig
             return false;
         }
 
-        if (element.ValueKind == JsonValueKind.Number && element.TryGetDouble(out value))
+        if (element.Type is JTokenType.Integer or JTokenType.Float)
         {
+            value = (double)element;
             return true;
         }
 
-        if (element.ValueKind == JsonValueKind.String && double.TryParse(element.GetString(), out value))
+        if (element.Type == JTokenType.String && double.TryParse((string?)element, out value))
         {
             return true;
         }
@@ -436,13 +437,18 @@ public sealed class OverlayConfig
             return false;
         }
 
-        if (element.ValueKind == JsonValueKind.String)
+        if (element.Type == JTokenType.String)
         {
-            value = element.GetString() ?? string.Empty;
+            value = (string?)element ?? string.Empty;
             return true;
         }
 
-        value = element.ToString();
+        if (element.Type == JTokenType.Null)
+        {
+            return false;
+        }
+
+        value = element.ToString(Formatting.None);
         return !string.IsNullOrWhiteSpace(value);
     }
 

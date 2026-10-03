@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace BeatRelay.Diagnostics;
 
@@ -41,7 +41,7 @@ public sealed class OverlayLogger : IOverlayLogger
             Message = message
         };
 
-        var line = JsonSerializer.Serialize(record);
+        var line = JsonConvert.SerializeObject(record);
         lock (syncRoot)
         {
             File.AppendAllText(LogPath, line + Environment.NewLine);
