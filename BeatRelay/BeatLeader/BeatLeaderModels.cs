@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BeatRelay.BeatLeader;
 
 public sealed class LeaderboardScoresResponse
 {
-    [JsonPropertyName("metadata")]
+    [JsonProperty("metadata")]
     public LeaderboardMetadata? Metadata { get; set; }
 
-    [JsonPropertyName("container")]
+    [JsonProperty("container")]
     public LeaderboardContainer? Container { get; set; }
 
-    [JsonPropertyName("data")]
+    [JsonProperty("data")]
     public List<BeatLeaderScoreDto> Data { get; set; } = new();
 
     public IReadOnlyList<BeatLeaderScoreRow> ToScoreRows()
@@ -36,37 +36,37 @@ public sealed class LeaderboardScoresResponse
 
 public sealed class LeaderboardDetailResponse
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName("scores")]
+    [JsonProperty("scores")]
     public List<BeatLeaderScoreDto> Scores { get; set; } = new();
 }
 
 public sealed class LeaderboardMetadata
 {
-    [JsonPropertyName("page")]
+    [JsonProperty("page")]
     public int Page { get; set; }
 
-    [JsonPropertyName("itemsPerPage")]
+    [JsonProperty("itemsPerPage")]
     public int ItemsPerPage { get; set; }
 
-    [JsonPropertyName("total")]
+    [JsonProperty("total")]
     public int Total { get; set; }
 }
 
 public sealed class LeaderboardContainer
 {
-    [JsonPropertyName("leaderboardId")]
+    [JsonProperty("leaderboardId")]
     public string? LeaderboardId { get; set; }
 
-    [JsonPropertyName("ranked")]
+    [JsonProperty("ranked")]
     public bool Ranked { get; set; }
 
-    [JsonPropertyName("maxScore")]
+    [JsonProperty("maxScore")]
     public int? MaxScore { get; set; }
 
-    [JsonPropertyName("stars")]
+    [JsonProperty("stars")]
     public double? Stars { get; set; }
 
     public string SourceName { get; set; } = "BeatLeader";
@@ -86,7 +86,7 @@ public sealed class LeaderboardContainer
     public string? RealmName { get; set; }
 
     [JsonExtensionData]
-    public Dictionary<string, JsonElement>? ExtraData { get; set; }
+    public Dictionary<string, JToken>? ExtraData { get; set; }
 
     public double? ResolveStars()
     {
@@ -163,20 +163,20 @@ public sealed class LeaderboardContainer
         return false;
     }
 
-    private static bool TryFindModifierValuesElement(JsonElement element, int depth, out JsonElement modifierValuesElement)
+    private static bool TryFindModifierValuesElement(JToken element, int depth, out JToken modifierValuesElement)
     {
-        modifierValuesElement = default;
+        modifierValuesElement = JValue.CreateNull();
         if (depth > 4)
         {
             return false;
         }
 
-        if (element.ValueKind == JsonValueKind.Object)
+        if (element.Type == JTokenType.Object)
         {
-            foreach (var property in element.EnumerateObject())
+            foreach (var property in ((JObject)element).Properties())
             {
                 if (string.Equals(property.Name, "modifierValues", StringComparison.OrdinalIgnoreCase)
-                    && property.Value.ValueKind == JsonValueKind.Object)
+                    && property.Value.Type == JTokenType.Object)
                 {
                     modifierValuesElement = property.Value;
                     return true;
@@ -188,9 +188,9 @@ public sealed class LeaderboardContainer
                 }
             }
         }
-        else if (element.ValueKind == JsonValueKind.Array)
+        else if (element.Type == JTokenType.Array)
         {
-            foreach (var item in element.EnumerateArray())
+            foreach (var item in (JArray)element)
             {
                 if (TryFindModifierValuesElement(item, depth + 1, out modifierValuesElement))
                 {
@@ -202,9 +202,9 @@ public sealed class LeaderboardContainer
         return false;
     }
 
-    private static BeatLeaderModifierValues ResolveModifierValues(JsonElement element, IReadOnlyList<string> normalizedMods)
+    private static BeatLeaderModifierValues ResolveModifierValues(JToken element, IReadOnlyList<string> normalizedMods)
     {
-        if (element.ValueKind != JsonValueKind.Object)
+        if (element.Type != JTokenType.Object)
         {
             return BeatLeaderModifierValues.Empty;
         }
@@ -259,7 +259,7 @@ public sealed class LeaderboardContainer
         };
     }
 
-    private static bool TryReadDouble(Dictionary<string, JsonElement> values, string key, out double value)
+    private static bool TryReadDouble(Dictionary<string, JToken> values, string key, out double value)
     {
         value = 0;
         if (!values.TryGetValue(key, out var element))
@@ -270,15 +270,15 @@ public sealed class LeaderboardContainer
         return TryElementDouble(element, out value);
     }
 
-    private static bool TryReadNestedDouble(Dictionary<string, JsonElement> values, string key, string nestedKey, out double value)
+    private static bool TryReadNestedDouble(Dictionary<string, JToken> values, string key, string nestedKey, out double value)
     {
         value = 0;
-        if (!values.TryGetValue(key, out var parent) || parent.ValueKind != JsonValueKind.Object)
+        if (!values.TryGetValue(key, out var parent) || parent.Type != JTokenType.Object)
         {
             return false;
         }
 
-        if (!parent.TryGetProperty(nestedKey, out var nested))
+        if (!((JObject)parent).TryGetValue(nestedKey, out var nested))
         {
             return false;
         }
@@ -286,36 +286,37 @@ public sealed class LeaderboardContainer
         return TryElementDouble(nested, out value);
     }
 
-    private static bool TryElementDouble(JsonElement element, out double value)
+    private static bool TryElementDouble(JToken element, out double value)
     {
         value = 0;
-        if (element.ValueKind == JsonValueKind.Number)
+        if (element.Type is JTokenType.Integer or JTokenType.Float)
         {
-            return element.TryGetDouble(out value);
+            value = (double)element;
+            return true;
         }
 
-        if (element.ValueKind == JsonValueKind.String)
+        if (element.Type == JTokenType.String)
         {
-            return double.TryParse(element.GetString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value);
+            return double.TryParse((string?)element, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value);
         }
 
         return false;
     }
 
-    private static double? TryGetDouble(JsonElement element, string propertyName)
+    private static double? TryGetDouble(JToken element, string propertyName)
     {
-        if (!element.TryGetProperty(propertyName, out var value))
+        if (element is not JObject obj || !obj.TryGetValue(propertyName, out var value))
         {
             return null;
         }
 
-        if (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number))
+        if (value.Type is JTokenType.Integer or JTokenType.Float)
         {
-            return number;
+            return (double)value;
         }
 
-        if (value.ValueKind == JsonValueKind.String
-            && double.TryParse(value.GetString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
+        if (value.Type == JTokenType.String
+            && double.TryParse((string?)value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
         {
             return parsed;
         }
@@ -326,31 +327,31 @@ public sealed class LeaderboardContainer
 
 public sealed class BeatLeaderScoreDto
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public long Id { get; set; }
 
-    [JsonPropertyName("rank")]
+    [JsonProperty("rank")]
     public int Rank { get; set; }
 
-    [JsonPropertyName("baseScore")]
+    [JsonProperty("baseScore")]
     public int? BaseScore { get; set; }
 
-    [JsonPropertyName("modifiedScore")]
+    [JsonProperty("modifiedScore")]
     public int ModifiedScore { get; set; }
 
-    [JsonPropertyName("accuracy")]
+    [JsonProperty("accuracy")]
     public double? Accuracy { get; set; }
 
-    [JsonPropertyName("pp")]
+    [JsonProperty("pp")]
     public double? Pp { get; set; }
 
-    [JsonPropertyName("modifiers")]
+    [JsonProperty("modifiers")]
     public string? Modifiers { get; set; }
 
-    [JsonPropertyName("leaderboardId")]
+    [JsonProperty("leaderboardId")]
     public string? LeaderboardId { get; set; }
 
-    [JsonPropertyName("player")]
+    [JsonProperty("player")]
     [JsonConverter(typeof(BeatLeaderPlayerDtoJsonConverter))]
     public BeatLeaderPlayerDto? Player { get; set; }
 
@@ -397,55 +398,56 @@ public sealed class BeatLeaderScoreDto
 
 public sealed class BeatLeaderPlayerDto
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string? Name { get; set; }
 
-    [JsonPropertyName("avatar")]
+    [JsonProperty("avatar")]
     public string? AvatarUrl { get; set; }
 
-    [JsonPropertyName("webAvatar")]
+    [JsonProperty("webAvatar")]
     public string? WebAvatarUrl { get; set; }
 }
 
 public sealed class BeatLeaderOAuthIdentityDto
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string? Name { get; set; }
 }
 
 public sealed class BeatLeaderPlayerDtoJsonConverter : JsonConverter<BeatLeaderPlayerDto>
 {
-    public override BeatLeaderPlayerDto? Read(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options)
+    public override BeatLeaderPlayerDto? ReadJson(
+        JsonReader reader,
+        Type objectType,
+        BeatLeaderPlayerDto? existingValue,
+        bool hasExistingValue,
+        JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonTokenType.Null)
+        if (reader.TokenType == JsonToken.Null)
         {
             return null;
         }
 
-        if (reader.TokenType == JsonTokenType.String)
+        if (reader.TokenType == JsonToken.String)
         {
             return new BeatLeaderPlayerDto
             {
-                Name = reader.GetString()
+                Name = (string?)reader.Value
             };
         }
 
-        if (reader.TokenType != JsonTokenType.StartObject)
+        if (reader.TokenType != JsonToken.StartObject)
         {
-            throw new JsonException($"Unexpected player token: {reader.TokenType}.");
+            throw new JsonSerializationException($"Unexpected player token: {reader.TokenType}.");
         }
 
-        using var document = JsonDocument.ParseValue(ref reader);
-        var root = document.RootElement;
+        var root = JObject.Load(reader);
         return new BeatLeaderPlayerDto
         {
             Id = TryGetString(root, "id"),
@@ -455,32 +457,41 @@ public sealed class BeatLeaderPlayerDtoJsonConverter : JsonConverter<BeatLeaderP
         };
     }
 
-    public override void Write(
-        Utf8JsonWriter writer,
-        BeatLeaderPlayerDto value,
-        JsonSerializerOptions options)
+    public override void WriteJson(
+        JsonWriter writer,
+        BeatLeaderPlayerDto? value,
+        JsonSerializer serializer)
     {
+        if (value == null)
+        {
+            writer.WriteNull();
+            return;
+        }
+
         writer.WriteStartObject();
-        writer.WriteString("id", value.Id);
-        writer.WriteString("name", value.Name);
-        writer.WriteString("avatar", value.AvatarUrl);
-        writer.WriteString("webAvatar", value.WebAvatarUrl);
+        writer.WritePropertyName("id");
+        writer.WriteValue(value.Id);
+        writer.WritePropertyName("name");
+        writer.WriteValue(value.Name);
+        writer.WritePropertyName("avatar");
+        writer.WriteValue(value.AvatarUrl);
+        writer.WritePropertyName("webAvatar");
+        writer.WriteValue(value.WebAvatarUrl);
         writer.WriteEndObject();
     }
 
-    private static string? TryGetString(JsonElement element, string propertyName)
+    private static string? TryGetString(JObject element, string propertyName)
     {
-        if (!element.TryGetProperty(propertyName, out var property))
+        if (!element.TryGetValue(propertyName, out var property))
         {
             return null;
         }
 
-        return property.ValueKind switch
+        return property.Type switch
         {
-            JsonValueKind.String => property.GetString(),
-            JsonValueKind.Number => property.GetRawText(),
-            JsonValueKind.True => bool.TrueString,
-            JsonValueKind.False => bool.FalseString,
+            JTokenType.String => (string?)property,
+            JTokenType.Integer or JTokenType.Float => property.ToString(Formatting.None),
+            JTokenType.Boolean => (bool)property ? bool.TrueString : bool.FalseString,
             _ => null
         };
     }
@@ -488,13 +499,13 @@ public sealed class BeatLeaderPlayerDtoJsonConverter : JsonConverter<BeatLeaderP
 
 public sealed class BeatLeaderSongResponse
 {
-    [JsonPropertyName("hash")]
+    [JsonProperty("hash")]
     public string? Hash { get; set; }
 
-    [JsonPropertyName("difficulties")]
+    [JsonProperty("difficulties")]
     public List<BeatLeaderMapDifficultyDto> Difficulties { get; set; } = new();
 
-    [JsonPropertyName("song")]
+    [JsonProperty("song")]
     public BeatLeaderSongDto? Song { get; set; }
 
     public IReadOnlyList<BeatLeaderMapDifficultyDto> ResolveDifficulties()
@@ -510,47 +521,47 @@ public sealed class BeatLeaderSongResponse
 
 public sealed class BeatLeaderSongDto
 {
-    [JsonPropertyName("hash")]
+    [JsonProperty("hash")]
     public string? Hash { get; set; }
 
-    [JsonPropertyName("difficulties")]
+    [JsonProperty("difficulties")]
     public List<BeatLeaderMapDifficultyDto> Difficulties { get; set; } = new();
 }
 
 public sealed class BeatLeaderMapDifficultyDto
 {
-    [JsonPropertyName("value")]
+    [JsonProperty("value")]
     public int? Value { get; set; }
 
-    [JsonPropertyName("difficultyName")]
+    [JsonProperty("difficultyName")]
     public string? DifficultyName { get; set; }
 
-    [JsonPropertyName("modeName")]
+    [JsonProperty("modeName")]
     public string? ModeName { get; set; }
 
-    [JsonPropertyName("status")]
+    [JsonProperty("status")]
     public int? Status { get; set; }
 
-    [JsonPropertyName("maxScore")]
+    [JsonProperty("maxScore")]
     public int? MaxScore { get; set; }
 
-    [JsonPropertyName("stars")]
+    [JsonProperty("stars")]
     public double? Stars { get; set; }
 
-    [JsonPropertyName("predictedAcc")]
+    [JsonProperty("predictedAcc")]
     public double? PredictedAcc { get; set; }
 
-    [JsonPropertyName("passRating")]
+    [JsonProperty("passRating")]
     public double? PassRating { get; set; }
 
-    [JsonPropertyName("accRating")]
+    [JsonProperty("accRating")]
     public double? AccRating { get; set; }
 
-    [JsonPropertyName("techRating")]
+    [JsonProperty("techRating")]
     public double? TechRating { get; set; }
 
     [JsonExtensionData]
-    public Dictionary<string, JsonElement>? ExtraData { get; set; }
+    public Dictionary<string, JToken>? ExtraData { get; set; }
 
     public bool TryResolveModifierRatings(IReadOnlyList<string> activeModifiers, out BeatLeaderModifierRatings ratings)
     {
@@ -639,11 +650,11 @@ public sealed class BeatLeaderMapDifficultyDto
         return values.HasAnyValue;
     }
 
-    private static bool TryMatchModifierContainer(JsonElement element, IReadOnlyList<string> normalizedMods, BeatLeaderModifierValues modifierValues, BeatLeaderModifierValues modifierValuesIgnoringSpeed, out BeatLeaderModifierRatings ratings)
+    private static bool TryMatchModifierContainer(JToken element, IReadOnlyList<string> normalizedMods, BeatLeaderModifierValues modifierValues, BeatLeaderModifierValues modifierValuesIgnoringSpeed, out BeatLeaderModifierRatings ratings)
     {
         ratings = BeatLeaderModifierRatings.Empty;
 
-        if (element.ValueKind == JsonValueKind.Object)
+        if (element.Type == JTokenType.Object)
         {
             foreach (var modifier in normalizedMods)
             {
@@ -654,7 +665,7 @@ public sealed class BeatLeaderMapDifficultyDto
                 }
             }
 
-            foreach (var property in element.EnumerateObject())
+            foreach (var property in ((JObject)element).Properties())
             {
                 if (!ContainsAllTokens(property.Name, normalizedMods))
                 {
@@ -674,11 +685,11 @@ public sealed class BeatLeaderMapDifficultyDto
                 return ratings.HasAnyValue;
             }
         }
-        else if (element.ValueKind == JsonValueKind.Array)
+        else if (element.Type == JTokenType.Array)
         {
-            foreach (var item in element.EnumerateArray())
+            foreach (var item in (JArray)element)
             {
-                if (item.ValueKind != JsonValueKind.Object)
+                if (item.Type != JTokenType.Object)
                 {
                     continue;
                 }
@@ -702,7 +713,7 @@ public sealed class BeatLeaderMapDifficultyDto
         return false;
     }
 
-    private static bool TryParseFlatModifierRatings(JsonElement element, string modifier, BeatLeaderModifierValues modifierValues, out BeatLeaderModifierRatings ratings)
+    private static bool TryParseFlatModifierRatings(JToken element, string modifier, BeatLeaderModifierValues modifierValues, out BeatLeaderModifierRatings ratings)
     {
         ratings = BeatLeaderModifierRatings.Empty;
         var prefix = modifier.Trim().ToLowerInvariant();
@@ -725,9 +736,9 @@ public sealed class BeatLeaderMapDifficultyDto
         return true;
     }
 
-    private static BeatLeaderModifierValues ResolveModifierValues(JsonElement element, IReadOnlyList<string> normalizedMods, bool ignoreSpeedModifiers)
+    private static BeatLeaderModifierValues ResolveModifierValues(JToken element, IReadOnlyList<string> normalizedMods, bool ignoreSpeedModifiers)
     {
-        if (element.ValueKind != JsonValueKind.Object)
+        if (element.Type != JTokenType.Object)
         {
             return BeatLeaderModifierValues.Empty;
         }
@@ -806,10 +817,10 @@ public sealed class BeatLeaderMapDifficultyDto
         };
     }
 
-    private static bool TryParseRatings(JsonElement element, out BeatLeaderModifierRatings ratings)
+    private static bool TryParseRatings(JToken element, out BeatLeaderModifierRatings ratings)
     {
         ratings = BeatLeaderModifierRatings.Empty;
-        if (element.ValueKind != JsonValueKind.Object)
+        if (element.Type != JTokenType.Object)
         {
             return false;
         }
@@ -842,31 +853,31 @@ public sealed class BeatLeaderMapDifficultyDto
         return true;
     }
 
-    private static string? TryGetString(JsonElement element, string propertyName)
+    private static string? TryGetString(JToken element, string propertyName)
     {
-        if (!element.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.String)
+        if (element is not JObject obj || !obj.TryGetValue(propertyName, out var value) || value.Type != JTokenType.String)
         {
             return null;
         }
 
-        var text = value.GetString();
+        var text = (string?)value;
         return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
     }
 
-    private static double? TryGetDouble(JsonElement element, string propertyName)
+    private static double? TryGetDouble(JToken element, string propertyName)
     {
-        if (!element.TryGetProperty(propertyName, out var value))
+        if (element is not JObject obj || !obj.TryGetValue(propertyName, out var value))
         {
             return null;
         }
 
-        if (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number))
+        if (value.Type is JTokenType.Integer or JTokenType.Float)
         {
-            return number;
+            return (double)value;
         }
 
-        if (value.ValueKind == JsonValueKind.String
-            && double.TryParse(value.GetString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
+        if (value.Type == JTokenType.String
+            && double.TryParse((string?)value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
         {
             return parsed;
         }

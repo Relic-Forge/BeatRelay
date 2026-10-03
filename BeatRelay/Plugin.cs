@@ -21,7 +21,7 @@ namespace BeatRelay;
 public sealed class Plugin
 {
     public const string Name = "BeatRelay";
-    public const string Version = "0.1.0";
+    public const string Version = "0.1.1";
 
     private static Plugin? instance;
 

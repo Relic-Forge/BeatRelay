@@ -2,18 +2,18 @@ using System;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BeatRelay.Diagnostics;
+using Newtonsoft.Json;
 
 namespace BeatRelay.BeatLeader;
 
 public sealed class BeatLeaderApiClient : IBeatLeaderApiClient
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
+    private static readonly JsonSerializerSettings SerializerSettings = new()
     {
-        PropertyNameCaseInsensitive = true
+        DateParseHandling = DateParseHandling.None
     };
 
     private readonly HttpClient httpClient;
@@ -157,7 +157,7 @@ public sealed class BeatLeaderApiClient : IBeatLeaderApiClient
 
         try
         {
-            var value = JsonSerializer.Deserialize<T>(result.Value, SerializerOptions);
+            var value = JsonConvert.DeserializeObject<T>(result.Value, SerializerSettings);
             return value == null
                 ? BeatLeaderApiResult<T>.Failure(result.StatusCode, "BeatLeader response was empty.")
                 : BeatLeaderApiResult<T>.Success(value, result.StatusCode!.Value);
@@ -184,7 +184,7 @@ public sealed class BeatLeaderApiClient : IBeatLeaderApiClient
 
         try
         {
-            var value = JsonSerializer.Deserialize<T>(result.Value, SerializerOptions);
+            var value = JsonConvert.DeserializeObject<T>(result.Value, SerializerSettings);
             return value == null
                 ? BeatLeaderApiResult<T>.Failure(result.StatusCode, "BeatLeader response was empty.")
                 : BeatLeaderApiResult<T>.Success(value, result.StatusCode!.Value);

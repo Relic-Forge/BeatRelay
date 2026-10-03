@@ -26,7 +26,7 @@ BeatRelay depends on:
 - BSIPA
 - BeatSaberMarkupLanguage
 
-Install compatible versions of these mods and their dependencies through BSManager, another mod manager, or their GitHub releases. They are not included in the BeatRelay ZIP. The ZIP includes BeatRelay's required .NET support libraries in `Libs`.
+Install compatible versions of these mods and their dependencies through BSManager, another mod manager, or their GitHub releases. They are not included in the BeatRelay ZIP. BeatRelay needs no other libraries; it uses the Newtonsoft.Json that ships with Beat Saber.
 
 ## Installation
 
@@ -36,7 +36,7 @@ Install BeatRelay like a normal Beat Saber mod:
 2. Extract the ZIP contents directly into your Beat Saber installation folder (the folder containing `Beat Saber.exe`), merging the included folders.
 3. Start Beat Saber and open BeatRelay from the mod menu.
 
-The ZIP contains `Plugins/BeatRelay.dll` and supporting DLLs in `Libs/`. Extract both folders into your Beat Saber installation folder; not inside `Plugins`.
+The ZIP contains only `Plugins/BeatRelay.dll`. Extract the `Plugins` folder into your Beat Saber installation folder; do not put it inside the existing `Plugins` folder.
 
 Your existing settings in `UserData` are preserved when updating.
 

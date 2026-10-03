@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
     <AssemblyName>BeatRelay</AssemblyName>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <RootNamespace>BeatRelay</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -105,10 +105,15 @@
       <HintPath>$(BeatSaberPluginsDir)\BSML.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <!-- Ships with Beat Saber in Managed; never copied into the release. -->
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(BeatSaberManagedDir)\Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <Target Name="CopyPluginToBeatSaber" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net48' and '$(InstallToBeatSaber)' != 'false' and Exists('$(BeatSaberPluginsDir)')">
